@@ -1,0 +1,23 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "memory"
+  },
+  "mysqlDs": {
+    "host": "us-cdbr-iron-east-03.cleardb.net",
+    "port": 3306,
+    "database": "ad_8054ca2f140c4f5",
+    "username": "bce7839c317adb",
+    "password": "5aa3107e",
+    "name": "mysqlDs",
+    "connector": "mysql"
+  },
+  "cloudantDs": {
+    "host": "localhost",
+    "port": 5984,
+    "name": "cloudantDs",
+    "connector": "couch",
+    "db": "tropical_kids_api",
+    "protocol": "http"
+  }
+}

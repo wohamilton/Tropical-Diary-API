@@ -1,0 +1,77 @@
+
+module.exports = function(app) {
+  app.dataSources.mysqlDs.automigrate('Guardian', function(err) {
+    if (err) throw err;
+ 
+    app.models.Guardian.create([
+      {name: 'Tom Jones', image_url: 'some.url.com'}
+    ], function(err, coffeeShops) {
+      if (err) throw err;
+    });
+  });
+
+app.dataSources.mysqlDs.automigrate('Diary', function(err) {
+    if (err) throw err;
+ 
+    app.models.Diary.create([
+      {name: 'Jimmie\'s Diary', guardian_id: 1}
+    ], function(err, coffeeShops) {
+      if (err) throw err;
+    });
+  });
+
+app.dataSources.mysqlDs.automigrate('Day', function(err) {
+    if (err) throw err;
+ 
+    app.models.Day.create([
+      {name: 'Monday', diary_id: 1, date: '12/03/2012'}
+    ], function(err, coffeeShops) {
+      if (err) throw err;
+    });
+  });
+
+app.dataSources.mysqlDs.automigrate('Session', function(err) {
+    if (err) throw err;
+ 
+    app.models.Session.create([
+      {name: 'Morning', day_id: 1}
+    ], function(err, coffeeShops) {
+      if (err) throw err;
+    });
+  });
+
+app.dataSources.mysqlDs.automigrate('Activity', function(err) {
+    if (err) throw err;
+ 
+    app.models.Activity.create([
+      {name: 'Writing a story', image_url: 'some.url.com', description: 'We wrote a story about a tree', start_time: '01/01/2012', end_time: '02/01/2012', session_id: 1, is_published: true}
+    ], function(err, coffeeShops) {
+      if (err) throw err;
+    });
+  });
+
+app.dataSources.mysqlDs.automigrate('Infant', function(err) {
+    if (err) throw err;
+ 
+    app.models.Infant.create([
+      {name: 'Jimmie'}
+    ], function(err, coffeeShops) {
+      if (err) throw err;
+    });
+  });
+
+app.dataSources.mysqlDs.automigrate('Parent', function(err) {
+    if (err) throw err;
+ 
+    app.models.Parent.create([
+      {name: 'Parent'}
+    ], function(err, coffeeShops) {
+      if (err) throw err;
+    });
+  });
+  
+
+
+
+console.log('models created');
+};

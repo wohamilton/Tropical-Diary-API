@@ -1,0 +1,74 @@
+{
+  "_meta": {
+    "sources": [
+      "loopback/common/models",
+      "loopback/server/models",
+      "../common/models",
+      "./models"
+    ],
+    "mixins": [
+      "loopback/common/mixins",
+      "loopback/server/mixins",
+      "../common/mixins",
+      "./mixins"
+    ]
+  },
+  "User": {
+    "dataSource": "db"
+  },
+  "AccessToken": {
+    "dataSource": "db",
+    "public": false
+  },
+  "ACL": {
+    "dataSource": "db",
+    "public": false
+  },
+  "RoleMapping": {
+    "dataSource": "db"
+  },
+  "Role": {
+    "dataSource": "db"
+  },
+  "Team": {
+    "dataSource": "db",
+    "public": false
+  },
+
+  "Guardian": {
+    "dataSource": "db",
+    "public": true
+  },
+  "Diary": {
+    "dataSource": "db",
+    "public": true
+  },
+  "Day": {
+    "dataSource": "db",
+    "public": true
+  },
+  "Session": {
+    "dataSource": "db",
+    "public": true
+  },
+  "Activity": {
+    "dataSource": "db",
+    "public": true
+  },
+  "Infant": {
+    "dataSource": "db",
+    "public": true
+  },
+  "Parent": {
+    "dataSource": "db",
+    "public": true
+  },
+  "TropicalUser": {
+    "dataSource": "db",
+    "public": "true"
+  },
+  "Reference": {
+    "dataSource": "db",
+    "public": true
+  }
+}

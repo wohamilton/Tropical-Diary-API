@@ -1,0 +1,25 @@
+{
+  "name": "TropicalUser",
+  "base": "User",
+  "idInjection": true,
+  "properties": {
+    "username": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "diaries": {
+      "type": "hasMany",
+      "model": "Diary",
+      "foreignKey": "ownerId"
+    },
+    "teams": {
+      "type": "hasMany",
+      "model": "team",
+      "foreignKey": "ownerId"
+    }
+  },
+  "acls": [],
+  "methods": []
+}

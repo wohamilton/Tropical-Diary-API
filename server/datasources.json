@@ -1,0 +1,38 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "memory"
+  },
+  "mysqlDs": {
+    "host": "us-cdbr-iron-east-03.cleardb.net",
+    "port": 3306,
+    "database": "ad_8054ca2f140c4f5",
+    "username": "bce7839c317adb",
+    "password": "5aa3107e",
+    "name": "mysqlDs",
+    "connector": "mysql"
+  },
+  "cloudantDs": {
+    "host": "ffcd193c-1301-4f47-a46c-1e802ecb2f28-bluemix.cloudant.com",
+    "port": 443,
+    "name": "cloudant",
+    "connector": "couch",
+    "db": "tropical_kids_api",
+    "protocol": "https",
+    "auth": {
+      "admin": {
+        "username": "ffcd193c-1301-4f47-a46c-1e802ecb2f28-bluemix",
+        "password": "930b1be95b4c700dc58cbbbd90eac65685855409fb8a878dc55aa13fe6901d54"
+      },
+      "reader": {
+        "username": "ffcd193c-1301-4f47-a46c-1e802ecb2f28-bluemix",
+        "password": "930b1be95b4c700dc58cbbbd90eac65685855409fb8a878dc55aa13fe6901d54"
+      },
+      "writer": {
+        "username": "ffcd193c-1301-4f47-a46c-1e802ecb2f28-bluemix",
+        "password": "930b1be95b4c700dc58cbbbd90eac65685855409fb8a878dc55aa13fe6901d54"
+      }
+    }
+
+  }
+}
