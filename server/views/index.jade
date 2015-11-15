@@ -6,9 +6,13 @@ block content
   button
       
   form(action="/home", method="post")
+    select(name="loginType")
+      option(value='guardian') Guardian
+      option(value='admin') Admin
     input(type="text", name="email", value="admin@tropical.com", placeholder="Email")
     input(type="password", name="password", value="xxx", placeholder="Password")
     input(type="submit", value="Login")
+
 
 
 

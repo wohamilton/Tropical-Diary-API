@@ -16,25 +16,58 @@ module.exports = function(app) {
   router.post('/home', function(req, res) {
     var email = req.body.email;
     var password = req.body.password;
+    var loginType = req.body.loginType;
 
-    app.models.User.login({
-      email: email,
-      password: password
-    }, 'user', function(err, token) {
-      if (err)
-        return res.render('index', {
-          email: email,
-          password: password,
-          loginFailed: true
+    console.log('LOGIN TYPE: ' + loginType);
+   //check login type 
+   if (loginType == 'guardian'){
+      console.log('g'); 
+      app.models.Guardian.login({
+        email: email,
+        password: password
+      }, 'user', function(err, token) {
+        if (err)
+          return res.render('index', {
+            email: email,
+            password: password,
+            loginFailed: true
+          });
+
+
+        token = token.toJSON();
+
+        res.render('home', {
+         username: token.user.username,
+         accessToken: token.id
         });
-
-      token = token.toJSON();
-
-      res.render('home', {
-       username: token.user.username,
-       accessToken: token.id
       });
-    });
+
+
+   }else{
+      console.log('u');
+      app.models.User.login({
+        email: email,
+        password: password
+      }, 'user', function(err, token) {
+        if (err)
+          return res.render('index', {
+            email: email,
+            password: password,
+            loginFailed: true
+          });
+
+
+        token = token.toJSON();
+
+        res.render('home', {
+         username: token.user.username,
+         accessToken: token.id
+        });
+      });
+
+   }
+
+
   });
 
   router.get('/logout', function(req, res) {
