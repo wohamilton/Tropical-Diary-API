@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  button
+      
+  form(action="/home", method="post")
+    input(type="text", name="email", value="admin@tropical.com", placeholder="Email")
+    input(type="password", name="password", value="xxx", placeholder="Password")
+    input(type="submit", value="Login")
+
+
+
