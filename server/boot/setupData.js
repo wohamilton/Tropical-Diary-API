@@ -1,20 +1,20 @@
 module.exports = function(app) {
-  var TropicalUser = app.models.TropicalUser;
+  var Guardian = app.models.Guardian;
   var Role = app.models.Role;
   var RoleMapping = app.models.RoleMapping;
   var Team = app.models.Team;
+  var User = app.models.User;
 
-  TropicalUser.create([
-    {username: 'Parent', email: 'parent@tropical.com', password: 'xxx'},
-    {username: 'Guardian', email: 'guardian@tropical.com', password: 'xxx'},
-    {username: 'Admin', email: 'admin@tropical.com', password: 'xxx'}
-  ], function(err, users) {
+  Guardian.create([
+    {name: 'Bill', username: 'Guardian', email: 'guardian@tropical.com', password: 'xxx'}
+  //  {username: 'Admin', email: 'admin@tropical.com', password: 'xxx'}
+  ], function(err, guardians) {
     if (err) throw err;
 
-    console.log('Created users:', users);
+    console.log('Created guardians:', guardians);
 
     // create project 1 and make john the owner
-    users[1].diaries.create({
+    guardians[0].Diaries.create({
       name: 'diary1',
       //balance: 100
     }, function(err, diary) {
@@ -24,14 +24,24 @@ module.exports = function(app) {
 
       // add team members
       Team.create([
-        {ownerId: diary.ownerId, memberId: users[0].id},
-        {ownerId: diary.ownerId, memberId: users[1].id}
+        {ownerId: diary.ownerId, memberId: guardians[0].id}
       ], function(err, team) {
         if (err) throw err;
 
         console.log('Created team:', team);
       });
     });
+  });
+
+  User.create([
+    //{username: 'Guardian', email: 'guardian@tropical.com', password: 'xxx'}
+    {username: 'Admin', email: 'admin@tropical.com', password: 'xxx'}
+  ], function(err, users) {
+    if (err) throw err;
+    
+      console.log('Created users:', users);
+
+
 
     //create the admin role
     Role.create({
@@ -44,7 +54,7 @@ module.exports = function(app) {
       //make bob an admin
       role.principals.create({
         principalType: RoleMapping.USER,
-        principalId: users[2].id
+        principalId: users[0].id
       }, function(err, principal) {
         if (err) throw err;
 

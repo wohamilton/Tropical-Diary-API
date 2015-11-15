@@ -63,10 +63,6 @@
     "dataSource": "db",
     "public": true
   },
-  "TropicalUser": {
-    "dataSource": "db",
-    "public": "true"
-  },
   "Reference": {
     "dataSource": "db",
     "public": true
