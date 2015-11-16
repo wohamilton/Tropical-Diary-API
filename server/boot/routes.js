@@ -18,10 +18,8 @@ module.exports = function(app) {
     var password = req.body.password;
     var loginType = req.body.loginType;
 
-    console.log('LOGIN TYPE: ' + loginType);
    //check login type 
    if (loginType == 'guardian'){
-      console.log('g'); 
       app.models.Guardian.login({
         email: email,
         password: password
@@ -44,7 +42,6 @@ module.exports = function(app) {
 
 
    }else{
-      console.log('u');
       app.models.User.login({
         email: email,
         password: password
@@ -67,6 +64,41 @@ module.exports = function(app) {
 
    }
 
+
+  });
+
+  router.get('/diaries', function(req, res){
+    
+    var diariesJSON = "init";
+
+
+/*
+    app.models.Diary.find(null, function(err, instances){
+      if (err) {
+        console.log(err);
+      }else{
+        console.log('IN');
+        console.log(instances.length);
+        diariesJSON = instances;
+      }    
+
+
+    });
+
+*/
+    app.models.Diary.findById(1,{include: 'guardian'}, function(err, instance){
+      if (err) {
+        console.log(err);
+      }else{
+        console.log(instance);
+      }    
+
+
+    });
+
+    res.render('diaries', {
+      diaries: diariesJSON
+    });
 
   });
 
