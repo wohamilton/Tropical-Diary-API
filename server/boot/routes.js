@@ -90,11 +90,15 @@ module.exports = function(app) {
       if (err) {
         console.log(err);
       }else{
-        console.log(instance);
+        //console.log(instance);
+        return diariesJSON = 'instance';
+        //console.log(diariesJSON);
       }    
-
+ 
 
     });
+
+    console.log(diariesJSON);
 
     res.render('diaries', {
       diaries: diariesJSON
