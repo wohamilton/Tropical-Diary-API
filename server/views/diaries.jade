@@ -2,9 +2,11 @@ extends layout
 
 block content
   h1= title
-  
-  p #{diaries} 
-
-
-
-
+ 
+  table
+    for val in diaries
+      tr
+        td
+          a(href='/diary?diaryId=' + val.id + '&token=' + token) #{val.name]
+        td
+          a(href='#') delete

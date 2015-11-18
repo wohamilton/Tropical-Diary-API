@@ -4,4 +4,4 @@ block content
   p User name: #{username}
   p Token: #{accessToken}     
 
-  a(href="/diaries") Show Diaries
+  a(href="/diaries?token=" + accessToken) Show Diaries

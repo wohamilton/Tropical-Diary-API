@@ -6,7 +6,9 @@ module.exports = function(app) {
   var User = app.models.User;
 
   Guardian.create([
-    {name: 'Bill', username: 'Guardian', email: 'guardian@tropical.com', password: 'xxx'}
+    {name: 'Bill', username: 'Guardian', email: 'guardian@tropical.com', password: 'xxx'},
+    {name: 'Gary', username: 'Guardian2', email: 'guardian2@tropical.com', password: 'xxx'}
+
   //  {username: 'Admin', email: 'admin@tropical.com', password: 'xxx'}
   ], function(err, guardians) {
     if (err) throw err;
@@ -31,6 +33,16 @@ module.exports = function(app) {
         console.log('Created team:', team);
       });
     });
+    
+    guardians[1].Diaries.create({
+      name: 'diary2',
+      //balance: 100
+    }, function(err, diary) {
+      if (err) throw err;
+
+      console.log('Created diary:', diary);
+    });
+
   });
 
   User.create([

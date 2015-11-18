@@ -2,6 +2,7 @@ module.exports = function(app) {
   var router = app.loopback.Router();
 
   router.get('/', function(req, res) {
+    console.log('Root');
     res.render('index', {
       loginFailed: false,
       title: 'Hello World'
@@ -14,6 +15,7 @@ module.exports = function(app) {
   });
 
   router.post('/home', function(req, res) {
+    console.log('home')        
     var email = req.body.email;
     var password = req.body.password;
     var loginType = req.body.loginType;
@@ -68,42 +70,40 @@ module.exports = function(app) {
   });
 
   router.get('/diaries', function(req, res){
+
+    var token = req.query.token;
+
+    app.models.Diary.find(function(err, instances){
+      if (err) {
+        console.log(err);
+      }else{
+        res.render('diaries', {
+          diaries: instances,
+	  token: token
+        });
+      }    
+    });
+  });
+
+
+  router.get('/diary', function(req, res){
     
-    var diariesJSON = "init";
+    console.log ('req.query.diaryId: ' + req.query.diaryId);
+    var diaryId = req.query.diaryId;
+    var token = req.query.token;
+    
 
-
-/*
-    app.models.Diary.find(null, function(err, instances){
+    app.models.Diary.findById(diaryId, {fields:{id: true, name: true}}, function(err, instance){
       if (err) {
         console.log(err);
       }else{
-        console.log('IN');
-        console.log(instances.length);
-        diariesJSON = instances;
+        console.log(instance);
+        res.render('diary', {
+          diary: instance,
+	  token: token
+        });
       }    
-
-
     });
-
-*/
-    app.models.Diary.findById(1,{include: 'guardian'}, function(err, instance){
-      if (err) {
-        console.log(err);
-      }else{
-        //console.log(instance);
-        return diariesJSON = 'instance';
-        //console.log(diariesJSON);
-      }    
- 
-
-    });
-
-    console.log(diariesJSON);
-
-    res.render('diaries', {
-      diaries: diariesJSON
-    });
-
   });
 
   router.get('/logout', function(req, res) {
