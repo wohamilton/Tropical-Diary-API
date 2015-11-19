@@ -34,7 +34,6 @@
     "dataSource": "db",
     "public": false
   },
-
   "Guardian": {
     "dataSource": "db",
     "public": true

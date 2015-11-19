@@ -93,15 +93,30 @@ module.exports = function(app) {
     var token = req.query.token;
     
 
-    app.models.Diary.findById(diaryId, {fields:{id: true, name: true}}, function(err, instance){
+    app.models.Diary.findById(diaryId,{include: 'Days'}, function(err, diary){
       if (err) {
         console.log(err);
       }else{
-        console.log(instance);
-        res.render('diary', {
-          diary: instance,
-	  token: token
-        });
+        console.log(diary);
+         
+        //To access the result from an 'include filter' need to call it as a function
+	var days = diary.Days();
+        console.log('***DayID ' + days[0].id);
+
+        app.models.Day.findById(days[0].id,{include: 'Activities'}, function(err, day){
+
+          console.log(day);
+          var activities = day.Activities();
+          console.log('***Activity Name ' + activities[0].name);
+
+          res.render('diary', {
+            diary: diary,
+	    days: days,
+            activities: activities, 
+            token: token
+          });
+
+	});
       }    
     });
   });

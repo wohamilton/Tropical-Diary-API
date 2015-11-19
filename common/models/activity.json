@@ -18,33 +18,28 @@
       "type": "string"
     },
     "description": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "isPublished": {
-      "type": "boolean",
-      "required": true
+      "type": "boolean"
     },
     "startTime": {
-      "type": "date",
-      "required": true
+      "type": "date"
     },
     "endTime": {
-      "type": "date",
-      "required": true
+      "type": "date"
     },
     "dayId": {
       "type": "string",
       "required": true
     },
     "userId": {
-      "type": "string",
-      "required": true
+      "type": "string"
     }
   },
   "validations": [],
   "relations": {
-    "day": {
+    "Day": {
       "type": "belongsTo",
       "model": "Day",
       "foreignKey": "dayId"

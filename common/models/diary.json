@@ -14,20 +14,25 @@
   },
   "validations": [],
   "relations": {
-    "guardian": {
+    "Guardians": {
       "type": "belongsTo",
       "model": "Guardian",
       "foreignKey": "ownerId"
     },
-    "infants": {
+    "Infants": {
       "type": "hasAndBelongsToMany",
       "model": "Infant",
       "foreignKey": ""
     },
-    "parentId": {
+    "Parents": {
       "type": "hasAndBelongsToMany",
       "model": "Parent",
       "foreignKey": "parentId"
+    },
+    "Days": {
+      "type": "hasMany",
+      "model": "Day",
+      "foreignKey": "diaryId"
     }
   },
   "acls": [

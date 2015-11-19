@@ -40,7 +40,23 @@ module.exports = function(app) {
     }, function(err, diary) {
       if (err) throw err;
 
-      console.log('Created diary:', diary);
+        console.log('Created diary:', diary);
+
+        diary.Days.create({description: "Tom's Birthday", date: "12/12/04"}, function(err, day){
+          if (err)
+	    console.log(err);
+
+          console.log('Created day: ',  day);
+
+	  day.Activities.create({name: 'Painting a picture', session: 'morning'},function(err, activity){
+	    if (err)
+	      console.log(err);
+
+	    console.log('Created activity: ', activity);
+	  });
+
+      });
+     
     });
 
   });

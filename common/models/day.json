@@ -21,10 +21,15 @@
   },
   "validations": [],
   "relations": {
-    "diary": {
+    "Diary": {
       "type": "belongsTo",
       "model": "Diary",
       "foreignKey": "diaryId"
+    },
+    "Activities": {
+      "type": "hasMany",
+      "model": "Activity",
+      "foreignKey": "dayId"
     }
   },
   "acls": [

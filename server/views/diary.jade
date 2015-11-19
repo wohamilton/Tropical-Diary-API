@@ -5,7 +5,29 @@ block content
 
   table
     tr
+      td Diary Id
       td #{diary.id}
-    tr  
+    tr
+      td Diary Name
       td #{diary.name}
+    tr  
+    tr
+    tr
+      each val, index in days
+        td
+        td Day #{index}
+        tr
+          td 
+          td Description
+          td #{val.description}
+      each val, index in activities
+        td
+        td
+        td Activity #{index}
+        tr
+          td 
+          td
+          td name
+          td #{val.name}
+
 
