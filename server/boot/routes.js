@@ -187,6 +187,9 @@ module.exports = function(app) {
     console.log('req.body.session: ' + req.body.session);
     console.log('req.body.description: ' + req.body.description);
     console.log('req.body.diaryId: ' + req.body.diaryId);
+    console.log('req.body.startDate: ' + req.body.startDate);
+    console.log('req.body.endDate: ' + req.body.endDate);
+    console.log('req.body.imageUrl: ' + req.body.imageUrl);
 
 
     var name = req.body.name;
