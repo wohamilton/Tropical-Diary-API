@@ -17,7 +17,7 @@ module.exports = function(app) {
 
     // create project 1 and make john the owner
     guardians[0].Diaries.create({
-      name: 'diary1',
+      name: "Jim's Diary",
       //balance: 100
     }, function(err, diary) {
       if (err) throw err;
@@ -35,29 +35,41 @@ module.exports = function(app) {
     });
     
     guardians[1].Diaries.create({
-      name: 'diary2',
-      //balance: 100
+      name: "Thomas' Diary",
     }, function(err, diary) {
       if (err) throw err;
 
         console.log('Created diary:', diary);
 
-        diary.activities.create({name: "Tom's Birthday"}, function(err, day){
+        diary.activities.create({
+	  name: "Eating spaghetti",
+	  session: "lunch",
+	  isPublished: false,
+	  description: "Fun, fun, fun.",
+	  image_url: "Some_url.com",
+	  start_date: '12/12/12',
+	  end_date: '12/13/12'
+	}, function(err, day){
           if (err)
 	    console.log(err);
+            console.log('Created Activity: ',  day);
+        });
+        
+	diary.activities.create({
+	  name: "Painting a picture",
+	  session: "afternoon",
+	  isPublished: false,
+	  description: "Fun, fun, fun.",
+	  image_url: "Some_url.com",
+	  start_date: '12/12/12',
+	  end_date: '12/13/12'
+	}, function(err, day){
+          if (err)
+	    console.log(err);
+            console.log('Created Activity: ',  day);
+        });
 
-          console.log('Created day: ',  day);
-
-
-      });
       
-      diary.activities.create({name: "The day after"}, function(err, day){
-          if (err)
-	    console.log(err);
-
-          console.log('Created day: ',  day);
-      });
-
     });
 
   });

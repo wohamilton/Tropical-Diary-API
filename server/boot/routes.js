@@ -190,14 +190,20 @@ module.exports = function(app) {
     console.log('req.body.startDate: ' + req.body.startDate);
     console.log('req.body.endDate: ' + req.body.endDate);
     console.log('req.body.imageUrl: ' + req.body.imageUrl);
+    console.log('req.body.isPublished: ' + req.body.isPublished);
+
 
 
     var name = req.body.name;
     var session = req.body.session;
     var description = req.body.description;
     var diaryId = req.body.diaryId;
+    var startDate = req.body.startDate;
+    var endDate = req.body.endDate;
+    var imageUrl = req.body.imageUrl;
+    var isPublished = req.body.isPublished;
 
-    var activityDataString = '{"session":"'+session+'","description":"'+description+'", "name":"'+name+'", "diaryId":'+diaryId+'}';
+    var activityDataString = '{"session":"'+session+'","description":"'+description+'", "name":"'+name+'", "diaryId":'+diaryId+', "start_date":"'+startDate+'", "end_date":"'+endDate+'", "image_url":"'+imageUrl+'", "isPublished":'+isPublished+'}';
     
     console.log('JSON String: ' + activityDataString);
     

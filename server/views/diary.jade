@@ -1,13 +1,10 @@
 extends layout
 
 block content
-  h1= diary.name 
+  h1 #{diary.name} - Activities 
 
   each val, index in activities 
     table   
-      tr
-        td Activity:
-        td Activity #{index}
       tr
         td Name:
         td #{val.name}
@@ -17,8 +14,24 @@ block content
       tr
         td Description:
         td #{val.description}
+      tr
+        td Image:
+        td #{val.image_url}
+      tr
+        td Is Published?
+        td #{val.isPublished}
+      tr
+        td Start Date
+        td #{val.start_date}
+      tr
+        td End Date
+        td #{val.end_date}
+
     
+    a(href='deleteActivity?activityId='+val.id+'&diaryId='+diary.id) Edit
+    br
     a(href='deleteActivity?activityId='+val.id+'&diaryId='+diary.id) Delete
+
     
     br
     br
