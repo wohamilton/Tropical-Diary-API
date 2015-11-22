@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  h1= title
+
+  h2 Add New Activity
+  
+  form(action="/addactivity", method="post")
+    input(type="text", name="name", placeholder="Name")
+    br
+    select(name="session")
+      option(value='morning') Morning
+      option(value='lunch') Lunch
+      option(value='afternoon') Afternoon
+    br
+    input(type="hidden", name="diaryId", value=diaryId, placeholder="Description")
+    br
+    input(type="text", name="description", placeholder="Description")
+    br
+    input(type="submit", value="Submit")
+

@@ -1,6 +1,10 @@
 module.exports = function(app) {
-  var router = app.loopback.Router();
+  
+  var Promise = require('bluebird');
+  var async = require('async');
 
+  var router = app.loopback.Router();
+ 
   router.get('/', function(req, res) {
     console.log('Root');
     res.render('index', {
@@ -38,6 +42,7 @@ module.exports = function(app) {
 
         res.render('home', {
          username: token.user.username,
+	 userId: token.user.id,
          accessToken: token.id
         });
       });
@@ -60,7 +65,8 @@ module.exports = function(app) {
 
         res.render('home', {
          username: token.user.username,
-         accessToken: token.id
+         accessToken: token.id,
+	 userId: token.user.id
         });
       });
 
@@ -71,15 +77,12 @@ module.exports = function(app) {
 
   router.get('/diaries', function(req, res){
 
-    var token = req.query.token;
-
     app.models.Diary.find(function(err, instances){
       if (err) {
         console.log(err);
       }else{
         res.render('diaries', {
-          diaries: instances,
-	  token: token
+          diaries: instances
         });
       }    
     });
@@ -90,35 +93,147 @@ module.exports = function(app) {
     
     console.log ('req.query.diaryId: ' + req.query.diaryId);
     var diaryId = req.query.diaryId;
-    var token = req.query.token;
     
 
-    app.models.Diary.findById(diaryId,{include: 'Days'}, function(err, diary){
+    app.models.Diary.findById(diaryId,{include: 'activities'}, function(err, diary){
       if (err) {
         console.log(err);
       }else{
-        console.log(diary);
-         
-        //To access the result from an 'include filter' need to call it as a function
-	var days = diary.Days();
-        console.log('***DayID ' + days[0].id);
+     
+        console.log(JSON.stringify(diary));
 
-        app.models.Day.findById(days[0].id,{include: 'Activities'}, function(err, day){
+	var activities = diary.activities();
 
-          console.log(day);
-          var activities = day.Activities();
-          console.log('***Activity Name ' + activities[0].name);
-
-          res.render('diary', {
-            diary: diary,
-	    days: days,
-            activities: activities, 
-            token: token
-          });
-
-	});
+        res.render('diary', {
+          diary: diary,
+	  activities: activities,
+        });
       }    
     });
+  });
+  
+  router.get('/deleteDiary', function(req, res) {
+    
+    console.log ('req.query.diaryId: ' + req.query.diaryId);
+    var diaryId = req.query.diaryId;
+   
+    app.models.Diary.destroyById(diaryId, function(err){
+      if (err) {
+        console.log(err);
+      }else{
+        console.log('Deleted: diaryId ' + diaryId); 
+	res.redirect('diaries');
+      }
+    });
+     
+  });
+  
+  
+  router.get('/addDiary', function(req, res) {
+     
+    app.models.Guardian.find(function(err, obj){
+      if (err)
+        console.log(err)
+
+      console.log(obj);
+
+      res.render('add_diary', {
+	guardians: obj
+
+      });
+    });
+  });
+
+  router.post('/addDiary', function(req, res) {
+    
+    console.log ('req.body.userId: ' + req.body.userId);
+    console.log ('req.body.diaryName: ' + req.body.diaryName);
+
+    var userId = req.body.userId;
+    var diaryName = req.body.diaryName;
+
+    var diaryDataString = '{"ownerId":'+userId+', "name":"'+diaryName+'"}';
+    
+    console.log('JSON String: ' + diaryDataString);
+    
+    var diaryDataJSON = JSON.parse(diaryDataString);
+
+    app.models.Diary.create(diaryDataJSON, function(err, obj){
+      if (err) {
+        console.log(err);
+      }else{
+	
+	console.log(obj);
+	
+	res.redirect('diaries?userId=' + userId+ '&token=123');
+
+      }
+    });
+    
+  });
+
+  router.get('/addActivity', function(req, res) {
+
+      var diaryId = req.query.diaryId;
+ 
+      res.render('add_activity',{
+        diaryId: diaryId
+      });
+  });
+
+  router.post('/addActivity', function(req, res) {
+    
+    console.log('req.body.name: ' + req.body.name);
+    console.log('req.body.session: ' + req.body.session);
+    console.log('req.body.description: ' + req.body.description);
+    console.log('req.body.diaryId: ' + req.body.diaryId);
+
+
+    var name = req.body.name;
+    var session = req.body.session;
+    var description = req.body.description;
+    var diaryId = req.body.diaryId;
+
+    var activityDataString = '{"session":"'+session+'","description":"'+description+'", "name":"'+name+'", "diaryId":'+diaryId+'}';
+    
+    console.log('JSON String: ' + activityDataString);
+    
+    var activityDataJSON = JSON.parse(activityDataString);
+
+    
+    app.models.Activity.create(activityDataJSON, function(err, obj){
+      if (err) {
+        console.log(err);
+      }else{
+	
+	console.log(obj);
+	
+	res.redirect('diary?diaryId=' + diaryId);
+
+      }
+    });
+
+    
+    
+  });
+
+
+  
+  router.get('/deleteActivity', function(req, res) {
+    
+    console.log ('req.query.activityId: ' + req.query.activityId);
+    var activityId = req.query.activityId;
+    var diaryId = req.query.diaryId;
+   
+    app.models.Activity.destroyById(activityId, function(err){
+      if (err) {
+        console.log(err);
+      }else{
+        console.log('Deleted: ActivityId ' + activityId); 
+	res.redirect('diary?diaryId=' + diaryId);
+      }
+    });
+     
   });
 
   router.get('/logout', function(req, res) {

@@ -1,33 +1,26 @@
 extends layout
 
 block content
-  h1= title
+  h1= diary.name 
 
-  table
-    tr
-      td Diary Id
-      td #{diary.id}
-    tr
-      td Diary Name
-      td #{diary.name}
-    tr  
-    tr
-    tr
-      each val, index in days
-        td
-        td Day #{index}
-        tr
-          td 
-          td Description
-          td #{val.description}
-      each val, index in activities
-        td
-        td
+  each val, index in activities 
+    table   
+      tr
+        td Activity:
         td Activity #{index}
-        tr
-          td 
-          td
-          td name
-          td #{val.name}
-
-
+      tr
+        td Name:
+        td #{val.name}
+      tr
+        td Session:
+        td #{val.session}
+      tr
+        td Description:
+        td #{val.description}
+    
+    a(href='deleteActivity?activityId='+val.id+'&diaryId='+diary.id) Delete
+    
+    br
+    br
+  
+  a(href='addactivity?diaryId='+diary.id) Add Activity

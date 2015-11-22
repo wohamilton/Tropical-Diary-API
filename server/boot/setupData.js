@@ -42,21 +42,22 @@ module.exports = function(app) {
 
         console.log('Created diary:', diary);
 
-        diary.Days.create({description: "Tom's Birthday", date: "12/12/04"}, function(err, day){
+        diary.activities.create({name: "Tom's Birthday"}, function(err, day){
           if (err)
 	    console.log(err);
 
           console.log('Created day: ',  day);
 
-	  day.Activities.create({name: 'Painting a picture', session: 'morning'},function(err, activity){
-	    if (err)
-	      console.log(err);
-
-	    console.log('Created activity: ', activity);
-	  });
 
       });
-     
+      
+      diary.activities.create({name: "The day after"}, function(err, day){
+          if (err)
+	    console.log(err);
+
+          console.log('Created day: ',  day);
+      });
+
     });
 
   });

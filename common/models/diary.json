@@ -19,19 +19,19 @@
       "model": "Guardian",
       "foreignKey": "ownerId"
     },
-    "Infants": {
+    "infants": {
       "type": "hasAndBelongsToMany",
       "model": "Infant",
       "foreignKey": ""
     },
-    "Parents": {
+    "parents": {
       "type": "hasAndBelongsToMany",
       "model": "Parent",
       "foreignKey": "parentId"
     },
-    "Days": {
+    "activities": {
       "type": "hasMany",
-      "model": "Day",
+      "model": "Activity",
       "foreignKey": "diaryId"
     }
   },

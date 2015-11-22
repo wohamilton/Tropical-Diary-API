@@ -1,7 +1,6 @@
 extends layout
 
 block content
-  p User name: #{username}
-  p Token: #{accessToken}     
+  h2 Welcome to the Tropical Diary admin portal
 
-  a(href="/diaries?token=" + accessToken) Show Diaries
+  a(href="/diaries") Show Diaries

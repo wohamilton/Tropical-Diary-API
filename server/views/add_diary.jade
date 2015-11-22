@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1= title
+
+  h2 Add New Diary
+  
+  form(action="/adddiary", method="post")
+    select(name="userId")
+      each val in guardians 
+        option(value=val.id) #{val.name}
+
+    input(type="text", name="diaryName", placeholder="DiaryName")
+    input(type="submit", value="Submit")
+

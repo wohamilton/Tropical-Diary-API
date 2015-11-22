@@ -4,9 +4,16 @@ block content
   h1= title
  
   table
+    th Name
+    th Owner
+    th Delete?
     for val in diaries
       tr
         td
-          a(href='/diary?diaryId=' + val.id + '&token=' + token) #{val.name]
+          a(href='/diary?diaryId=' + val.id) #{val.name]
+        td GuardianId: #{val.ownerId}
         td
-          a(href='#') delete
+          a(href='deleteDiary?diaryId='+val.id) delete
+  
+  br
+  a(href='adddiary') Add New Diary

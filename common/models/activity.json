@@ -29,20 +29,16 @@
     "endTime": {
       "type": "date"
     },
-    "dayId": {
-      "type": "string",
-      "required": true
-    },
     "userId": {
       "type": "string"
     }
   },
   "validations": [],
   "relations": {
-    "Day": {
+    "diary": {
       "type": "belongsTo",
-      "model": "Day",
-      "foreignKey": "dayId"
+      "model": "Diary",
+      "foreignKey": "diaryId"
     },
     "user": {
       "type": "belongsTo",
