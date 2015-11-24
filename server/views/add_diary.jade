@@ -1,10 +1,9 @@
 extends layout
 
 block content
-  h1= title
+  a(href='activities?diarId='+diaryId) back
+  h1 Add New Diary
 
-  h2 Add New Diary
-  
   form(action="/adddiary", method="post")
     select(name="userId")
       each val in guardians 

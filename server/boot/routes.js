@@ -1,8 +1,6 @@
 module.exports = function(app) {
   
-  var Promise = require('bluebird');
-  var async = require('async');
-
+  var dateformat = require('dateformat');
   var router = app.loopback.Router();
  
   router.get('/', function(req, res) {
@@ -226,6 +224,84 @@ module.exports = function(app) {
     
   });
 
+  router.get('/editActivity', function(req, res) {
+
+      var diaryId = req.query.diaryId;
+      var activityId = req.query.activityId;
+      
+      app.models.Activity.findById(activityId, function(err, activity){
+        if (err) {
+          console.log(err);
+        }else{
+	
+  	  console.log(activity);
+
+          var d = new Date(activity.start_date);
+          var formattedStartDate = dateformat(d, "yyyy-mm-dd");
+          
+          var d = new Date(activity.end_date);
+          var formattedEndDate = dateformat(d, "yyyy-mm-dd");
+          
+          console.log(d);
+    
+          res.render('add_activity',{
+            diaryId: diaryId,
+            activity: activity,
+            formattedStartDate: formattedStartDate,
+            formattedEndDate: formattedEndDate 
+          });
+
+        }
+      });
+
+
+  });
+
+  router.post('/editActivity', function(req, res) {
+    
+    console.log('req.body.activityId: ' + req.body.activityId);
+    console.log('req.body.name: ' + req.body.name);
+    console.log('req.body.session: ' + req.body.session);
+    console.log('req.body.description: ' + req.body.description);
+    console.log('req.body.diaryId: ' + req.body.diaryId);
+    console.log('req.body.startDate: ' + req.body.startDate);
+    console.log('req.body.endDate: ' + req.body.endDate);
+    console.log('req.body.imageUrl: ' + req.body.imageUrl);
+    console.log('req.body.isPublished: ' + req.body.isPublished);
+
+
+    var id = req.body.activityId;
+    var name = req.body.name;
+    var session = req.body.session;
+    var description = req.body.description;
+    var diaryId = req.body.diaryId;
+    var startDate = req.body.startDate;
+    var endDate = req.body.endDate;
+    var imageUrl = req.body.imageUrl;
+    var isPublished = req.body.isPublished;
+
+    var activityDataString = '{"id":"'+id+'","session":"'+session+'","description":"'+description+'", "name":"'+name+'", "diaryId":'+diaryId+', "start_date":"'+startDate+'", "end_date":"'+endDate+'", "image_url":"'+imageUrl+'", "isPublished":"'+isPublished+'"}';
+    
+    console.log('JSON String: ' + activityDataString);
+    
+    var activityDataJSON = JSON.parse(activityDataString);
+
+    
+    app.models.Activity.upsert(activityDataJSON, function(err, obj){
+      if (err) {
+        console.log(err);
+      }else{
+	
+	console.log(obj);
+	
+	res.redirect('diary?diaryId=' + diaryId);
+
+      }
+    });
+
+    
+    
+  });
 
   
   router.get('/deleteActivity', function(req, res) {
