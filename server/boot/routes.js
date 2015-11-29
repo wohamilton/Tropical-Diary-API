@@ -20,34 +20,8 @@ module.exports = function(app) {
     console.log('home')        
     var email = req.body.email;
     var password = req.body.password;
-    var loginType = req.body.loginType;
 
-   //check login type 
-   if (loginType == 'guardian'){
-      app.models.Guardian.login({
-        email: email,
-        password: password
-      }, 'user', function(err, token) {
-        if (err)
-          return res.render('index', {
-            email: email,
-            password: password,
-            loginFailed: true
-          });
-
-
-        token = token.toJSON();
-
-        res.render('home', {
-         username: token.user.username,
-	 userId: token.user.id,
-         accessToken: token.id
-        });
-      });
-
-
-   }else{
-      app.models.User.login({
+      app.models.TropicalUser.login({
         email: email,
         password: password
       }, 'user', function(err, token) {
@@ -68,7 +42,6 @@ module.exports = function(app) {
         });
       });
 
-   }
 
 
   });
@@ -320,6 +293,34 @@ module.exports = function(app) {
     });
      
   });
+
+  router.get('/users', function(req, res){
+   /* app.models.TropicalUser.find(,function(err, instances){
+      if (err) {
+        console.log(err);
+      }else{
+        console.log(instances);
+        res.render('users', {
+          users: instances
+        });
+      }    
+    });*/
+
+    app.models.Role.findOne({where: {name: 'admin'}}, function(err, adminRole) {
+      adminRole.users(function(err, users) {
+        console.log(users);
+      });
+    });
+
+
+
+
+
+
+  });
+
+
+
 
   router.get('/logout', function(req, res) {
     var AccessToken = app.models.AccessToken;

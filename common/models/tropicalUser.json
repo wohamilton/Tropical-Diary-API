@@ -1,23 +1,29 @@
 {
   "name": "TropicalUser",
+  "plural": "TropicalUsers",
   "base": "User",
   "idInjection": true,
   "properties": {
-    "username": {
+    "image_url": {
       "type": "string"
     }
   },
   "validations": [],
   "relations": {
-    "diaries": {
+    "Diaries": {
       "type": "hasMany",
       "model": "Diary",
       "foreignKey": "ownerId"
     },
-    "teams": {
+    "Teams": {
       "type": "hasMany",
       "model": "team",
       "foreignKey": "ownerId"
+    },
+    "Roles": {
+      "type": "hasAndBelongsToMany",
+      "model": "Role",
+      "foreignKey": ""
     }
   },
   "acls": [],

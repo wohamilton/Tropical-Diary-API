@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  a(href='home') back
+  h1 Users
+
+  table
+    th Name
+    for val in users
+      tr
+        td #{val.name}
+  
+  br
+  a(href='adduser') Add New User

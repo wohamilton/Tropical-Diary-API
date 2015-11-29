@@ -14,7 +14,8 @@
     ]
   },
   "User": {
-    "dataSource": "db"
+    "dataSource": "db",
+    "public": true
   },
   "AccessToken": {
     "dataSource": "db",
@@ -34,7 +35,7 @@
     "dataSource": "db",
     "public": false
   },
-  "Guardian": {
+  "TropicalUser": {
     "dataSource": "db",
     "public": true
   },
@@ -42,23 +43,7 @@
     "dataSource": "db",
     "public": true
   },
-  "Day": {
-    "dataSource": "db",
-    "public": true
-  },
-  "Session": {
-    "dataSource": "db",
-    "public": true
-  },
   "Activity": {
-    "dataSource": "db",
-    "public": true
-  },
-  "Infant": {
-    "dataSource": "db",
-    "public": true
-  },
-  "Parent": {
     "dataSource": "db",
     "public": true
   },

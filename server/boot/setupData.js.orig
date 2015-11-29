@@ -1,69 +1,22 @@
 module.exports = function(app) {
-  var TropicalUser = app.models.TropicalUser;
+  var Guardian = app.models.Guardian;
   var Role = app.models.Role;
   var RoleMapping = app.models.RoleMapping;
   var Team = app.models.Team;
   var User = app.models.User;
 
-  TropicalUser.create([
+  Guardian.create([
     {name: 'Bill', username: 'Guardian', email: 'guardian@tropical.com', password: 'xxx'},
-    {name: 'Gary', username: 'Guardian2', email: 'guardian2@tropical.com', password: 'xxx'},
-    {name: 'Carlo', username: 'Parent', email: 'parent@tropical.com', password: 'xxx'}
+    {name: 'Gary', username: 'Guardian2', email: 'guardian2@tropical.com', password: 'xxx'}
 
   //  {username: 'Admin', email: 'admin@tropical.com', password: 'xxx'}
-  ], function(err, users) {
+  ], function(err, guardians) {
     if (err) throw err;
 
-    console.log('Created tropical users:', users);
-
-    //create the admin role
-    Role.create({
-      name: 'guardian'
-    }, function(err, role) {
-      if (err) throw err;
-
-      console.log('Created role:', role);
-
-      //make bob an admin
-      role.principals.create({
-        principalType: RoleMapping.USER,
-        principalId: users[0].id
-      }, function(err, principal) {
-        if (err) throw err;
-        console.log('Created principal:', principal);
-      });
-
-      //make bob an admin
-      role.principals.create({
-        principalType: RoleMapping.USER,
-        principalId: users[1].id
-      }, function(err, principal) {
-        if (err) throw err;
-        console.log('Created principal:', principal);
-      });
-    });
-
-    Role.create({
-      name: 'parent'
-    }, function(err, role) {
-      if (err) throw err;
-
-      console.log('Created role:', role);
-
-      //make bob an admin
-      role.principals.create({
-        principalType: RoleMapping.USER,
-        principalId: users[2].id
-      }, function(err, principal) {
-        if (err) throw err;
-        console.log('Created principal:', principal);
-      });
-    });
-
-
+    console.log('Created guardians:', guardians);
 
     // create project 1 and make john the owner
-    users[0].Diaries.create({
+    guardians[0].Diaries.create({
       name: "Jim's Diary",
       //balance: 100
     }, function(err, diary) {
@@ -73,7 +26,7 @@ module.exports = function(app) {
 
       // add team members
       Team.create([
-        {ownerId: diary.ownerId, memberId: users[0].id}
+        {ownerId: diary.ownerId, memberId: guardians[0].id}
       ], function(err, team) {
         if (err) throw err;
 
@@ -81,7 +34,7 @@ module.exports = function(app) {
       });
     });
     
-    users[1].Diaries.create({
+    guardians[1].Diaries.create({
       name: "Thomas' Diary",
     }, function(err, diary) {
       if (err) throw err;
@@ -121,13 +74,13 @@ module.exports = function(app) {
 
   });
 
-  TropicalUser.create([
+  User.create([
     //{username: 'Guardian', email: 'guardian@tropical.com', password: 'xxx'}
-    {username: 'Admin', name: 'Admin', email: 'admin@tropical.com', password: 'xxx'}
+    {username: 'Admin', email: 'admin@tropical.com', password: 'xxx'}
   ], function(err, users) {
     if (err) throw err;
     
-      console.log('Created tropical users:', users);
+      console.log('Created users:', users);
 
 
 
