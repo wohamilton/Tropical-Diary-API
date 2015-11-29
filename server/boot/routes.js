@@ -4,7 +4,6 @@ module.exports = function(app) {
   var router = app.loopback.Router();
  
   router.get('/', function(req, res) {
-    console.log('Root');
     res.render('index', {
       loginFailed: false,
       title: 'Hello World'
@@ -17,7 +16,6 @@ module.exports = function(app) {
   });
 
   router.post('/home', function(req, res) {
-    console.log('home')        
     var email = req.body.email;
     var password = req.body.password;
 
@@ -307,15 +305,30 @@ module.exports = function(app) {
     });*/
 
     app.models.Role.findOne({where: {name: 'admin'}}, function(err, adminRole) {
-      adminRole.users(function(err, users) {
-        console.log(users);
-      });
+      console.log(adminRole);
+
+      //adminRole.users(function(err, users) {
+      //  console.log(users);
+     // });
+     if(adminRole) {
+       console.log('ADMINROLEID: '+adminRole.id);
+       app.models.RoleMapping.find({where: {roleId: adminRole.id}}, function (err, mappings) {
+	 if (err) {
+	   callback && callback(err);
+	   //return;
+	 }
+         var users = mappings.map(function (m) {
+           return m.principalId;
+         });
+         console.log(users);
+         //callback(null, users);
+       });
+     } else { 
+       console.log(err);
+       callback(err);
+     }
+
     });
-
-
-
-
-
 
   });
 
