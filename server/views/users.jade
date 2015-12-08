@@ -6,9 +6,16 @@ block content
 
   table
     th Name
+    th email
+    th role
+    th edit
+
     for val in users
       tr
         td #{val.name}
-  
+        td #{val.email}
+        td #{role}    
+        td 
+          a(href='#') edit
   br
   a(href='adduser') Add New User

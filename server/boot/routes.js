@@ -292,43 +292,67 @@ module.exports = function(app) {
      
   });
 
+
+
+
+
   router.get('/users', function(req, res){
-   /* app.models.TropicalUser.find(,function(err, instances){
-      if (err) {
-        console.log(err);
-      }else{
-        console.log(instances);
-        res.render('users', {
-          users: instances
-        });
-      }    
-    });*/
+   
+  var RoleMapping = app.models.RoleMapping;
+  var User = app.models.TropicalUser;
+  var role = req.query.role;
 
-    app.models.Role.findOne({where: {name: 'admin'}}, function(err, adminRole) {
-      console.log(adminRole);
+  console.log("Role: " + role);
 
-      //adminRole.users(function(err, users) {
-      //  console.log(users);
-     // });
-     if(adminRole) {
-       console.log('ADMINROLEID: '+adminRole.id);
-       app.models.RoleMapping.find({where: {roleId: adminRole.id}}, function (err, mappings) {
-	 if (err) {
-	   callback && callback(err);
-	   //return;
-	 }
-         var users = mappings.map(function (m) {
-           return m.principalId;
+  /////////////////////////////
+  ////////Get users by role////
+
+  RoleMapping.usersIDByRole = function(role, callback){
+
+    RoleMapping.app.models.Role.findOne({where: {name:role}}, function(err, role){
+
+     if( err || !role ) return callback(err);
+
+         RoleMapping.find({
+          where: {
+            roleId: role.id,
+            principalType: RoleMapping.USER
+          }
+         }, function(err, mappings){
+
+           if( err ) return callback(err);
+              var users = mappings.map(function (m) {
+               return m.principalId;
+              });
+              callback(null, users);
+          });
+      });
+
+   } 
+
+   User.getUsersByRole = function(role, callback) {
+
+     User.app.models.RoleMapping.usersIDByRole(role, function(err, users) {
+
+       if( err || !users ) return callback(err);
+       
+       User.find({where : {id : {inq : users}}}, function(err, users){
+       //User.find({where : {id : {inq : users}}}, callback)
+         res.render('users', {
+            role: role,
+	    users: users 
          });
-         console.log(users);
-         //callback(null, users);
        });
-     } else { 
-       console.log(err);
-       callback(err);
-     }
+     });
+   };
 
-    });
+//////////////////////////////////
+/////////////////////////////////
+
+   User.getUsersByRole(role);
+    
+
+
 
   });
 
