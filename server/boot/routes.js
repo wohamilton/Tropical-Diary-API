@@ -357,6 +357,37 @@ module.exports = function(app) {
   });
 
 
+  router.get('/editUser', function(req, res) {
+
+      var userId = req.query.userId;
+      
+      app.models.TropicalUser.findById(userId, function(err, user){
+        if (err) {
+          console.log(err);
+        }else{
+	
+  	  console.log(user);
+
+          //var d = new Date(activity.start_date);
+          //var formattedStartDate = dateformat(d, "yyyy-mm-dd");
+          
+          //var d = new Date(activity.end_date);
+          //var formattedEndDate = dateformat(d, "yyyy-mm-dd");
+          
+          //console.log(d);
+    
+          res.render('add_user',{
+            user: user,
+           // formattedStartDate: formattedStartDate,
+           // formattedEndDate: formattedEndDate 
+          });
+
+        }
+      });
+
+
+  });
+
 
 
   router.get('/logout', function(req, res) {
