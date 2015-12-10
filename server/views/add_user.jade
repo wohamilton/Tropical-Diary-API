@@ -3,21 +3,28 @@ extends layout
 block content
   a(href='users') back
   h1 Add/Edit User
-
     form(action="/edituser", method="post")
-   
+      input(type="hidden", name="userId", value=user.id, placeholder="UserId")
+      input(type="hidden", name="originalRole", value=role, placeholder="OriginalRole")
       input(type="text", name="name", value=user.name, placeholder="Name")
       br
-      input(type="hidden", name="userId", value=user.id, placeholder="UserId")
-      br
-      input(type="text", name="username", value=user.username, placeholder="UserName")
+      input(type="text", name="userName", value=user.username, placeholder="UserName")
       br
       input(type="email", name="email", value=user.email, placeholder="Email")
       br
       select(name="role")
-        option(value='admin') Admin
-        option(value='parent') Parent
-        option(value='guardian') Guardian
+        if role == "admin"
+          option(selected value='admin') Admin
+          option(value='parent') Parent
+          option(value='guardian') Guardian
+        else if role == "parent"
+          option(value='admin') Admin
+          option(selected value='parent') Parent
+          option(value='guardian') Guardian
+        else  
+          option(value='admin') Admin
+          option(value='parent') Parent
+          option(selected value='guardian') Guardian
       br
       input(type="submit", value="Submit")
 

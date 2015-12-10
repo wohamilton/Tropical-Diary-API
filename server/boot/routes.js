@@ -360,6 +360,8 @@ module.exports = function(app) {
   router.get('/editUser', function(req, res) {
 
       var userId = req.query.userId;
+      var role = req.query.role;
+      
       
       app.models.TropicalUser.findById(userId, function(err, user){
         if (err) {
@@ -378,6 +380,7 @@ module.exports = function(app) {
     
           res.render('add_user',{
             user: user,
+            role: role
            // formattedStartDate: formattedStartDate,
            // formattedEndDate: formattedEndDate 
           });
@@ -386,6 +389,73 @@ module.exports = function(app) {
       });
 
 
+  });
+
+  router.post('/editUser', function(req, res) {
+    
+    console.log('req.body.name: ' + req.body.name);
+    console.log('req.body.userName: ' + req.body.userName);
+    console.log('req.body.email: ' + req.body.email);
+    console.log('req.body.role: ' + req.body.role);
+    console.log('req.body.id: ' + req.body.userId);
+    console.log('req.body.originalRole: ' + req.body.originalRole);
+
+
+
+    console.log("req.body: " + JSON.stringify(req.body));
+
+
+    var name = req.body.name;
+    var userName = req.body.userName;
+    var email = req.body.email;
+    var role = req.body.role;
+    var id = req.body.userId;
+    var originalRole = req.body.originalRole;
+
+    var userDataString = '{"id":"'+id+'","name":"'+name+'","username":"'+userName+'", "email":"'+email+'", "role":"'+role+'"}';
+    
+    console.log('JSON String: ' + userDataString);
+    var userDataJSON = JSON.parse(userDataString);
+
+    
+    app.models.TropicalUser.update(userDataJSON, function(err, obj){
+      if (err) {
+        console.log(err);
+      }else{
+        console.log(obj);
+	
+	
+      }
+    });
+
+    if (originalRole != role){
+      console.log("role has changed");
+     
+      //app.models.RoleMapping.update("TEST", function(err, obj){
+      //  if (err) {
+      //    console.log(err);
+      //  }else{
+      //    console.log(obj);
+      //  }
+      //});
+ 
+
+
+      res.redirect('users?userId=' + id + '&role=' + role);
+
+
+    }else{
+      console.log("role is same");
+       
+
+
+
+      res.redirect('users?userId=' + id + '&role=' + role);
+
+    }  
+
+    
+    
   });
 
 
