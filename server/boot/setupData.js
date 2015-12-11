@@ -18,7 +18,8 @@ module.exports = function(app) {
 
     //create the admin role
     Role.create({
-      name: 'guardian'
+      name: 'guardian',
+      description: 'Guardians'
     }, function(err, role) {
       if (err) throw err;
 
@@ -44,7 +45,8 @@ module.exports = function(app) {
     });
 
     Role.create({
-      name: 'parent'
+      name: 'parent',
+      description: 'Parents'
     }, function(err, role) {
       if (err) throw err;
 
@@ -133,7 +135,8 @@ module.exports = function(app) {
 
     //create the admin role
     Role.create({
-      name: 'admin'
+      name: 'admin',
+      description: 'Admins'
     }, function(err, role) {
       if (err) throw err;
 

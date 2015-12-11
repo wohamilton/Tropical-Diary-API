@@ -6,10 +6,7 @@ block content
   a(href="/diaries") Manage Diaries
   br
   br
-  a(href="/users?role=admin") Manage Admins
-  br
-  br
-  a(href="/users?role=parent") Manage Parents
-  br
-  br
-  a(href="/users?role=guardian") Manage Guardians
+  for val in roles
+    a(href="/users?role=#{val.name}&roleId=#{val.id}") Manage #{val.description}
+    br
+    br

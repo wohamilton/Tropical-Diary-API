@@ -2,6 +2,7 @@ module.exports = function(app) {
   
   var dateformat = require('dateformat');
   var router = app.loopback.Router();
+
  
   router.get('/', function(req, res) {
     res.render('index', {
@@ -15,34 +16,33 @@ module.exports = function(app) {
     res.render('home');
   });
 
+
+
   router.post('/home', function(req, res) {
     var email = req.body.email;
     var password = req.body.password;
 
-      app.models.TropicalUser.login({
-        email: email,
-        password: password
-      }, 'user', function(err, token) {
-        if (err)
-          return res.render('index', {
-            email: email,
-            password: password,
-            loginFailed: true
+      app.models.TropicalUser.login({email: email,password: password}, 'user', function(err, token) {
+        if (err) return res.render('index', {email: email, password: password, loginFailed: true});
+      
+        app.models.Role.find(function(err, roles) {
+          if (err) console.log(err)
+        
+          console.log(roles)
+
+          res.render('home', {
+            roles: roles,
+            username: token.user.username,
+            accessToken: token.id,
+	    userId: token.user.id
           });
 
-
-        token = token.toJSON();
-
-        res.render('home', {
-         username: token.user.username,
-         accessToken: token.id,
-	 userId: token.user.id
         });
+
       });
+   });
 
 
-
-  });
 
   router.get('/diaries', function(req, res){
 
@@ -301,6 +301,7 @@ module.exports = function(app) {
   var RoleMapping = app.models.RoleMapping;
   var User = app.models.TropicalUser;
   var role = req.query.role;
+  var roleId = req.query.roleId;
 
   console.log("Role: " + role);
 
@@ -340,6 +341,7 @@ module.exports = function(app) {
        //User.find({where : {id : {inq : users}}}, callback)
          res.render('users', {
             role: role,
+            roleId: roleId,
 	    users: users 
          });
        });
@@ -370,21 +372,18 @@ module.exports = function(app) {
 	
   	  console.log(user);
 
-          //var d = new Date(activity.start_date);
-          //var formattedStartDate = dateformat(d, "yyyy-mm-dd");
-          
-          //var d = new Date(activity.end_date);
-          //var formattedEndDate = dateformat(d, "yyyy-mm-dd");
-          
-          //console.log(d);
-    
-          res.render('add_user',{
-            user: user,
-            role: role
-           // formattedStartDate: formattedStartDate,
-           // formattedEndDate: formattedEndDate 
-          });
+          app.models.Role.find(function(err, roles) {
+            if (err) console.log(err)
+        
+            console.log(roles)
 
+            res.render('add_user', {
+              user: user,
+              role: role,
+              roles: roles,
+            });
+
+          });
         }
       });
 
@@ -396,14 +395,14 @@ module.exports = function(app) {
     console.log('req.body.name: ' + req.body.name);
     console.log('req.body.userName: ' + req.body.userName);
     console.log('req.body.email: ' + req.body.email);
-    console.log('req.body.role: ' + req.body.role);
+    console.log('req.body.role: ' + JSON.stringify(req.body.role));
     console.log('req.body.id: ' + req.body.userId);
     console.log('req.body.originalRole: ' + req.body.originalRole);
-
+    console.log('req.body.roleId: ' + req.body.roleId)
 
 
     console.log("req.body: " + JSON.stringify(req.body));
-
+   
 
     var name = req.body.name;
     var userName = req.body.userName;
@@ -411,8 +410,16 @@ module.exports = function(app) {
     var role = req.body.role;
     var id = req.body.userId;
     var originalRole = req.body.originalRole;
+    var roleId = req.body.roleId;
+    
 
-    var userDataString = '{"id":"'+id+'","name":"'+name+'","username":"'+userName+'", "email":"'+email+'", "role":"'+role+'"}';
+    console.log("NEW ROLE ID: " + role.id);
+
+
+
+
+
+    var userDataString = '{"id":"'+id+'","name":"'+name+'","username":"'+userName+'", "email":"'+email+'"}';
     
     console.log('JSON String: ' + userDataString);
     var userDataJSON = JSON.parse(userDataString);
@@ -430,16 +437,33 @@ module.exports = function(app) {
 
     if (originalRole != role){
       console.log("role has changed");
+      console.log("role.id: " + role.id);
      
-      //app.models.RoleMapping.update("TEST", function(err, obj){
-      //  if (err) {
-      //    console.log(err);
-      //  }else{
-      //    console.log(obj);
-      //  }
-      //});
+      app.models.RoleMapping.findOne({where: {principalId:id, roleId:role.id}}, function(err, roleMapping){
+        if (err) {
+          console.log(err);
+        }else{
+          //console.log(roleMapping);
+          
+
+         //NEED NEW ROLE ID 
+          var roleMappingString = '{"id":"'+roleMapping.id+'","principalId":"'+id+'","roleId":"'+role.id+'"}';
+          var roleMappingJSON = JSON.parse(roleMappingString);
+
+          app.models.RoleMapping.upsert(roleMappingJSON, function(err, obj){
+            if (err) {
+              console.log(err);
+            }else{
+              console.log(obj);
+            }
+          });
  
 
+        }
+      });
+ 
+
+      
 
       res.redirect('users?userId=' + id + '&role=' + role);
 

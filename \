@@ -3,8 +3,7 @@ extends layout
 block content
   a(href='users') back
   h1 Add/Edit User
-  p #{roles[0].name}
-  p #{role}
+  p #{roles}
 
 
     form(action="/edituser", method="post")
@@ -17,11 +16,11 @@ block content
       input(type="email", name="email", value=user.email, placeholder="Email")
       br
       select(name="role")
-        for val in roles
+        for var in roles
           if role == val.name
-            option(selected value=val) #{val.name}
+            option(selected value=val.name) val.description
           else  
-            option(value=val) #{val.name}
+            option(value='admin') Admin
       br
       input(type="submit", value="Submit")
 
