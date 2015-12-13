@@ -1,6 +1,7 @@
 module.exports = function(app) {
   
   var dateformat = require('dateformat');
+  var Promise = require('bluebird');
   var router = app.loopback.Router();
 
  
@@ -13,14 +14,25 @@ module.exports = function(app) {
   });
   
   router.get('/home', function(req, res) {
-    res.render('home');
-  });
+    app.models.Role.find(function(err, roles) {
+          if (err) console.log(err)
+        
+          console.log(roles)
+
+          res.render('home', {
+            roles: roles,
+          });
+
+        });
+    
+    });
 
 
 
   router.post('/home', function(req, res) {
     var email = req.body.email;
     var password = req.body.password;
+    
 
       app.models.TropicalUser.login({email: email,password: password}, 'user', function(err, token) {
         if (err) return res.render('index', {loginFailed: true, errorMessage: err});
@@ -300,6 +312,8 @@ module.exports = function(app) {
    
   var RoleMapping = app.models.RoleMapping;
   var User = app.models.TropicalUser;
+  var Role = app.models.Role;
+
   var role = req.query.role;
   var roleId = req.query.roleId;
 
@@ -313,8 +327,7 @@ module.exports = function(app) {
     RoleMapping.app.models.Role.findOne({where: {name:role}}, function(err, role){
 
      if( err || !role ) return callback(err);
-
-         RoleMapping.find({
+        RoleMapping.find({
           where: {
             roleId: role.id,
             principalType: RoleMapping.USER
@@ -337,9 +350,10 @@ module.exports = function(app) {
 
        if( err || !users ) return callback(err);
        
-       User.find({where : {id : {inq : users}}}, function(err, users){
-       //User.find({where : {id : {inq : users}}}, callback)
-         res.render('users', {
+       User.find({where: {id : {inq:users}}}, function(err, users){
+         console.log(users);
+	 
+	 res.render('users', {
             role: role,
             roleId: roleId,
 	    users: users 
@@ -350,11 +364,122 @@ module.exports = function(app) {
 
 //////////////////////////////////
 /////////////////////////////////
+var getRolesWithBluebird = function(){
 
-   User.getUsersByRole(role);
-    
+  return new Promise(function(resolve, reject){
+
+    Role.find(function(err, roles) {
+
+      if (err) reject(err); //the value in the reject function will be passed to the .catch function
+
+      resolve(roles); //the value passed in the resolve function will be passed to the .then function
+    });
+  });
+};
+
+var getRoleMappingsWithBluebird = function(roles){
+
+  return new Promise(function(resolve, reject){
+
+    RoleMapping.find(function(err, roleMappings) {
+
+      if (err) reject(err); //the value in the reject function will be passed to the .catch function
+
+      resolve(roleMappings); //the value passed in the resolve function will be passed to the .then function
+    });
+  });
+};
+
+var getUsersWithBluebird = function(roles, roleMappings){
+
+  return new Promise(function(resolve, reject){
+
+    User.find(function(err, users) {
+
+      if (err) reject(err); //the value in the reject function will be passed to the .catch function
+
+      
+      for (var i=0; i<roleMappings.length; i++){
+        
+	console.log('rolemapping.principalID: ' + roleMappings[i].principalId);
+
+        for (var j=0; j<users.length; j++){
+          
+          console.log('userId: ' + users[j].id);
+
+	  if (roleMappings[i].principalId == users[j].id){
+            console.log('match: ' + roleMappings[i].principalId + ' vs ' + users[j].id);
+	    users[j].roleId = roleMappings[i].roleId;
+
+	  }
 
 
+	}
+
+
+
+      }
+
+
+            
+      for (var i=0; i<users.length; i++){
+        for (var j=0; j<roles.length; j++){
+          if (users[i].roleId == roles[j].id){
+            users[i].role = roles[j].name;
+	  }
+	}
+      }
+      
+      console.log(JSON.stringify(users));
+
+      
+      resolve(users); //the value passed in the resolve function will be passed to the .then function
+    });
+  });
+};
+
+
+
+/////////
+////////
+
+
+
+getRolesWithBluebird()
+.then(function(roles){
+  console.log('got this: ' + roles);
+  getRoleMappingsWithBluebird(roles)
+  .then(function(roleMappings){
+    console.log('next got this: ' + roleMappings);
+    getUsersWithBluebird(roles, roleMappings)
+    .then(function(users){
+      console.log('next next got this: ' + users);
+      res.render('users', {users: users});
+    })
+  })
+})
+.catch (function(error){
+  console.log('something went wrong: ' + error);
+});
+
+//getAvatarWithBluebird('danthareja')
+//.then(function(avatarUrl){
+// console.log('got this: ' + avatarUrl);
+//    getAvatarWithBluebird('wohamilton')
+//      .then(function(avatarUrl2){
+//          console.log('then got this: ' + avatarUrl2);
+//	    });
+
+
+
+///////
+
+
+
+
+
+
+//   User.getUsersByRole(role);
 
   });
 
@@ -444,7 +569,7 @@ module.exports = function(app) {
             console.log(err);
           }else{
             console.log(obj);
-            res.redirect('/');
+            res.redirect('/users');
           }
         });
       }

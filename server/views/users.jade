@@ -14,8 +14,8 @@ block content
       tr
         td #{val.name}
         td #{val.email}
-        td #{role}    
+        td #{val.role}    
         td 
-          a(href='/edituser?userId=#{val.id}&role=#{role}&roleId=#{roleId}') edit
+          a(href='/edituser?userId=#{val.id}&role=#{val.role}&roleId=#{val.roleId}') edit
   br
   a(href='adduser') Add New User
