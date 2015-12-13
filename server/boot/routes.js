@@ -7,7 +7,7 @@ module.exports = function(app) {
   router.get('/', function(req, res) {
     res.render('index', {
       loginFailed: false,
-      title: 'Hello World'
+      errorMessage: ""
     });
 
   });
@@ -23,7 +23,7 @@ module.exports = function(app) {
     var password = req.body.password;
 
       app.models.TropicalUser.login({email: email,password: password}, 'user', function(err, token) {
-        if (err) return res.render('index', {email: email, password: password, loginFailed: true});
+        if (err) return res.render('index', {loginFailed: true, errorMessage: err});
       
         app.models.Role.find(function(err, roles) {
           if (err) console.log(err)
@@ -363,6 +363,7 @@ module.exports = function(app) {
 
       var userId = req.query.userId;
       var role = req.query.role;
+      var roleId= req.query.roleId;
       
       
       app.models.TropicalUser.findById(userId, function(err, user){
@@ -380,8 +381,9 @@ module.exports = function(app) {
             res.render('add_user', {
               user: user,
               role: role,
+	      roleId: roleId,
               roles: roles,
-            });
+           });
 
           });
         }
@@ -395,94 +397,59 @@ module.exports = function(app) {
     console.log('req.body.name: ' + req.body.name);
     console.log('req.body.userName: ' + req.body.userName);
     console.log('req.body.email: ' + req.body.email);
-    console.log('req.body.role: ' + JSON.stringify(req.body.role));
+    console.log('req.body.newRoleId: ' + req.body.newRoleId);
     console.log('req.body.id: ' + req.body.userId);
     console.log('req.body.originalRole: ' + req.body.originalRole);
-    console.log('req.body.roleId: ' + req.body.roleId)
+    console.log('req.body.originalRoleId: ' + req.body.originalRoleId)
 
 
     console.log("req.body: " + JSON.stringify(req.body));
-   
 
     var name = req.body.name;
     var userName = req.body.userName;
     var email = req.body.email;
-    var role = req.body.role;
     var id = req.body.userId;
     var originalRole = req.body.originalRole;
-    var roleId = req.body.roleId;
+    var originalRoleId = req.body.originalRoleId;
+    var newRoleId = req.body.newRoleId;
     
-
-    console.log("NEW ROLE ID: " + role.id);
-
-
-
-
-
     var userDataString = '{"id":"'+id+'","name":"'+name+'","username":"'+userName+'", "email":"'+email+'"}';
     
     console.log('JSON String: ' + userDataString);
     var userDataJSON = JSON.parse(userDataString);
 
     
-    app.models.TropicalUser.update(userDataJSON, function(err, obj){
+    app.models.TropicalUser.upsert(userDataJSON, function(err, obj){
       if (err) {
         console.log(err);
       }else{
         console.log(obj);
-	
-	
       }
     });
 
-    if (originalRole != role){
-      console.log("role has changed");
-      console.log("role.id: " + role.id);
      
-      app.models.RoleMapping.findOne({where: {principalId:id, roleId:role.id}}, function(err, roleMapping){
-        if (err) {
-          console.log(err);
-        }else{
-          //console.log(roleMapping);
+    app.models.RoleMapping.findOne({where: {principalId:id, roleId:originalRoleId}}, function(err, roleMapping){
+      if (err) {
+        console.log(err);
+      }else{
+        console.log("roleMapping " + roleMapping);
           
 
-         //NEED NEW ROLE ID 
-          var roleMappingString = '{"id":"'+roleMapping.id+'","principalId":"'+id+'","roleId":"'+role.id+'"}';
-          var roleMappingJSON = JSON.parse(roleMappingString);
+        //NEED NEW ROLE ID 
+        var roleMappingString = '{"id":"'+roleMapping.id+'","principalId":"'+id+'","roleId":"'+newRoleId+'"}';
+        var roleMappingJSON = JSON.parse(roleMappingString);
 
-          app.models.RoleMapping.upsert(roleMappingJSON, function(err, obj){
-            if (err) {
-              console.log(err);
-            }else{
-              console.log(obj);
-            }
-          });
- 
-
-        }
-      });
- 
-
-      
-
-      res.redirect('users?userId=' + id + '&role=' + role);
-
-
-    }else{
-      console.log("role is same");
-       
-
-
-
-      res.redirect('users?userId=' + id + '&role=' + role);
-
-    }  
-
-    
-    
+        app.models.RoleMapping.upsert(roleMappingJSON, function(err, obj){
+          if (err) {
+            console.log(err);
+          }else{
+            console.log(obj);
+            res.redirect('/');
+          }
+        });
+      }
+    });
   });
-
-
 
   router.get('/logout', function(req, res) {
     var AccessToken = app.models.AccessToken;
