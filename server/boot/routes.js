@@ -575,6 +575,82 @@ getRolesWithBluebird()
       }
     });
   });
+ 
+  router.get('/addUser', function(req, res) {
+    /* 
+    app.models.Guardian.find(function(err, obj){
+      if (err)
+        console.log(err)
+
+      console.log(obj);
+
+      res.render('add_diary', {
+	guardians: obj
+
+      });
+    });
+    */
+    
+    app.models.Role.find(function(err, roles) {
+      if (err) console.log(err)
+      
+      console.log('roles: ' + JSON.stringify(roles));   
+      res.render('add_user', {
+        roles: roles
+      });
+    });
+  });
+
+ 
+  router.post('/addUser', function(req, res) {
+    
+    console.log('req.body.name: ' + req.body.name);
+    console.log('req.body.userName: ' + req.body.userName);
+    console.log('req.body.email: ' + req.body.email);
+    console.log('req.body.roleId: ' + req.body.roleId);
+    console.log('req.body.password: ' + req.body.password);
+
+    var name = req.body.name; 
+    var userName = req.body.userName;
+    var email = req.body.email;
+    var roleId = req.body.roleId;
+    var password = req.body.password;
+     
+    
+    var userDataString = '{"name":"'+name+'","userName":"'+userName+'", "email":"'+email+'", "password":"'+password+'"}';
+    
+    console.log('JSON String: ' + userDataString);
+
+    var userDataJSON = JSON.parse(userDataString);
+
+    
+    app.models.TropicalUser.create(userDataJSON, function(err, user){
+      if (err) {
+        console.log(err);
+      }else{
+	
+	console.log(user);
+	
+        var roleMappingDataString = '{"principalType":"'+app.models.RoleMapping.USER+'","principalId":"'+user.id+'", "roleId":"'+roleId+'"}';
+    
+        console.log('JSON String: ' + roleMappingDataString);
+
+        var roleMappingDataJSON = JSON.parse(roleMappingDataString);
+
+        app.models.RoleMapping.create(roleMappingDataJSON, function(err, roleMapping){
+          if (err) console.log(err);
+	
+	  console.log(roleMapping);
+	
+	  res.redirect('users');
+
+        });
+
+      }
+    });
+
+  });
+
 
   router.get('/logout', function(req, res) {
     var AccessToken = app.models.AccessToken;

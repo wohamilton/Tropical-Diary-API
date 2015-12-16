@@ -4,6 +4,7 @@ block content
   a(href='users') back
   h1 Add/Edit User
 
+  if user
 
     form(action="/edituser", method="post")
       input(type="hidden", name="userId", value=user.id, placeholder="UserId")
@@ -23,5 +24,25 @@ block content
             option(value=val.id) #{val.name}
       br
       input(type="submit", value="Submit")
+  
+  else
+    
+    form(action="/adduser", method="post")
+      input(type="text", name="name", placeholder="Name")
+      br
+      input(type="text", name="userName", placeholder="UserName")
+      br
+      input(type="email", name="email", placeholder="Email")
+      br
+      input(type="text", name="password", placeholder="Password")
+      br
+      select(name="roleId")
+        for val in roles
+          if role == val.name
+            option(selected value=val.id) #{val.name}
+          else  
+            option(value=val.id) #{val.name}
+      br
+      input(type="submit", value="Submit")
+  
 
- 
