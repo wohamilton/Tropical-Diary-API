@@ -8,76 +8,106 @@ block content
   
   if !activity
 
+    input(type="hidden", name="diaryId", value=diaryId, placeholder="Description")
+ 
     form(action="/addactivity", method="post")
-   
-      input(type="text", name="name", placeholder="Name")
-      br
-      select(name="session")
-        option(value='morning') Morning
-        option(value='lunch') Lunch
-        option(value='afternoon') Afternoon
-      br
-      input(type="hidden", name="diaryId", value=diaryId, placeholder="Description")
-      br
-      input(type="text", name="description", placeholder="Description")
-      br
-      input(type="date", name="startDate", placeholder="StartDate")
-      br
-      input(type="date", name="endDate", placeholder="EndDate")
-      br
-      input(type="text", name="imageUrl", placeholder="ImageUrl")
-      br
-      select(name="isPublished")
-        option(value='true') True
-        option(value='false') False
+      table
+        tr
+          td Name
+          td
+            input(type="text", name="name", placeholder="Name")
+        tr
+          td Session
+          td
+            select(name="session")
+              option(value='morning') Morning
+              option(value='lunch') Lunch
+              option(value='afternoon') Afternoon
+        tr
+          td Description
+          td  
+            input(type="text", name="description", placeholder="Description")
+        tr
+          td Start Date
+          td
+            input(type="date", name="startDate", placeholder="StartDate")
+        tr
+          td End Date
+          td
+            input(type="date", name="endDate", placeholder="EndDate")
+        tr
+          td Image URL
+          td
+            input(type="text", name="imageUrl", placeholder="ImageUrl")
+        tr
+          td Is Published
+          td
+            select(name="isPublished")
+              option(value='true') True
+              option(value='false') False
       br
       input(type="submit", value="Submit")
 
   else
 
     form(action="/editActivity", method="post")
-      
-      input(type="hidden", name="activityId", value=activity.id, placeholder="Id")
- 
-      input(type="text", name="name", value=activity.name, placeholder="Name")
-      br
-      select(name="session")
-        if activity.session == 'morning'
-          option(selected value='morning') Morning
-        else        
-          option(value='morning') Morning
+            input(type="hidden", name="activityId", value=activity.id, placeholder="Id")
+            input(type="hidden", name="diaryId", value=diaryId, placeholder="Description")
+
+
+      table
+        tr
+          td Name
+          td
+            input(type="text", name="name", value=activity.name, placeholder="Name")
+        tr
+          td Session
+          td
+            select(name="session")
+              if activity.session == 'morning'
+                option(selected value='morning') Morning
+              else        
+                option(value='morning') Morning
         
-        if activity.session == 'lunch'
-          option(selected value='lunch') Lunch
-        else        
-          option(value='lunch') Lunch
+              if activity.session == 'lunch'
+                option(selected value='lunch') Lunch
+              else        
+                option(value='lunch') Lunch
 
-        if activity.session == 'afternoon'
-          option(selected value='afternoon') Afternoon
-        else        
-          option(value='afternoon') Afternoon
-      br
-      input(type="hidden", name="diaryId", value=diaryId, placeholder="Description")
-      br
-      input(type="text", name="description", value=activity.description, placeholder="Description")
-      br
-      input(type="date", name="startDate", value=formattedStartDate, placeholder="StartDate")
-      br
-      input(type="date", name="endDate", value=formattedEndDate, placeholder="EndDate")
-      br
-      input(type="text", name="imageUrl", value=activity.image_url placeholder="ImageUrl")
-      br
-      select(name="isPublished")
-        if activity.isPublished == true
-          option(selected value=true) True
-        else        
-          option(value=true) True
+              if activity.session == 'afternoon'
+                option(selected value='afternoon') Afternoon
+              else        
+                option(value='afternoon') Afternoon
+        tr
+          td Description
+          td
+            input(type="text", name="description", value=activity.description, placeholder="Description")
+        tr
+          td Start Date
+          td
+            input(type="date", name="startDate", value=formattedStartDate, placeholder="StartDate")
+        tr
+          td End Date
+          td
+            input(type="date", name="endDate", value=formattedEndDate, placeholder="EndDate")
+        tr
+          td Image URL
+          td
+            input(type="text", name="imageUrl", value=activity.image_url placeholder="ImageUrl")
+        tr
+          td Is Published
+          td
+            select(name="isPublished")
+              if activity.isPublished == true
+                option(selected value=true) True
+              else        
+                option(value=true) True
 
-        if activity.isPublished == false
-          option(selected value=false) False
-        else        
-          option(value=false) False
+              if activity.isPublished == false
+                option(selected value=false) False
+              else        
+                option(value=false) False
 
-      br
-      input(type="submit", value="Submit")
+    br
+    input(type="submit", value="Submit")
  

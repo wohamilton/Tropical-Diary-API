@@ -58,12 +58,32 @@ module.exports = function(app) {
 
   router.get('/diaries', function(req, res){
 
-    app.models.Diary.find(function(err, instances){
+    app.models.Diary.find(function(err, diaries){
       if (err) {
         console.log(err);
       }else{
-        res.render('diaries', {
-          diaries: instances
+
+        app.models.TropicalUser.find(function(err, users){
+          if (err) console.log(err);
+
+          //console.log(JSON.stringify(users));
+          for (var i=0; i<diaries.length; i++){
+            console.log(diaries[i].ownerId);
+            for (var j=0; j<users.length; j++){
+              console.log(users[j].id)
+              if (diaries[i].ownerId == users[j].id){
+                console.log('match')
+                diaries[i].ownerName = users[j].name;
+              }
+            }          
+          }
+          
+          console.log(JSON.stringify(diaries));
+          res.render('diaries', {
+            diaries: diaries
+          });
+
+
         });
       }    
     });
@@ -112,14 +132,14 @@ module.exports = function(app) {
   
   router.get('/addDiary', function(req, res) {
      
-    app.models.Guardian.find(function(err, obj){
+    app.models.TropicalUser.find(function(err, obj){
       if (err)
         console.log(err)
 
       console.log(obj);
 
       res.render('add_diary', {
-	guardians: obj
+	users: obj
 
       });
     });

@@ -1,14 +1,21 @@
 extends layout
 
 block content
-  a(href='activities?diarId='+diaryId) back
+  a(href='diaries') back
   h1 Add New Diary
 
   form(action="/adddiary", method="post")
-    select(name="userId")
-      each val in guardians 
-        option(value=val.id) #{val.name}
-
-    input(type="text", name="diaryName", placeholder="DiaryName")
+    table
+      tr
+        td Guardian
+        td
+          select(name="userId")
+            each val in users 
+              option(value=val.id) #{val.name}
+      tr
+        td Diary Name
+        td
+          input(type="text", name="diaryName", placeholder="DiaryName")
+    br 
     input(type="submit", value="Submit")
 

@@ -7,21 +7,33 @@ block content
   if user
 
     form(action="/edituser", method="post")
+
       input(type="hidden", name="userId", value=user.id, placeholder="UserId")
       input(type="hidden", name="originalRole", value=role, placeholder="OriginalRole")
       input(type="hidden", name="originalRoleId", value=roleId, placeholder="OriginalRoleId")
-      input(type="text", name="name", value=user.name, placeholder="Name")
-      br
-      input(type="text", name="userName", value=user.username, placeholder="UserName")
-      br
-      input(type="email", name="email", value=user.email, placeholder="Email")
-      br
-      select(name="newRoleId")
-        for val in roles
-          if role == val.name
-            option(selected value=val.id) #{val.name}
-          else  
-            option(value=val.id) #{val.name}
+      
+      table
+        tr
+          td Name
+          td
+            input(type="text", name="name", value=user.name, placeholder="Name")
+        tr
+          td Username
+          td
+            input(type="text", name="userName", value=user.username, placeholder="UserName")
+        tr
+          td Email
+          td
+            input(type="email", name="email", value=user.email, placeholder="Email")
+        tr
+          td Role
+          td
+            select(name="newRoleId")
+              for val in roles
+                if role == val.name
+                  option(selected value=val.id) #{val.name}
+                else  
+                  option(value=val.id) #{val.name}
       br
       input(type="submit", value="Submit")
   
