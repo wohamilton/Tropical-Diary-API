@@ -5,13 +5,15 @@ block content
   h1 Users
 
   table
+    th Id
     th Name
     th email
     th role
     th edit
 
     for val in users
-      tr
+      tr 
+        td #{val.id}
         td #{val.name}
         td #{val.email}
         td #{val.role}    

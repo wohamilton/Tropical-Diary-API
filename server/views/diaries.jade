@@ -5,11 +5,13 @@ block content
   h1 Diaries
  
   table
+    th Id
     th Name
     th Owner
     th Delete?
     for val in diaries
       tr
+        td #{val.id}
         td
           a(href='/diary?diaryId=' + val.id) #{val.name]
         td #{val.ownerName}

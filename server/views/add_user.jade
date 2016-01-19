@@ -40,20 +40,33 @@ block content
   else
     
     form(action="/adduser", method="post")
-      input(type="text", name="name", placeholder="Name")
-      br
-      input(type="text", name="userName", placeholder="UserName")
-      br
-      input(type="email", name="email", placeholder="Email")
-      br
-      input(type="text", name="password", placeholder="Password")
-      br
-      select(name="roleId")
-        for val in roles
-          if role == val.name
-            option(selected value=val.id) #{val.name}
-          else  
-            option(value=val.id) #{val.name}
+    
+      table
+        tr
+          td Name
+          td
+            input(type="text", name="name", placeholder="Name")
+        tr
+          td Username
+          td
+            input(type="text", name="userName", placeholder="UserName")
+        tr
+          td Email
+          td
+            input(type="email", name="email", placeholder="Email")
+        tr
+          td Password
+          td
+            input(type="text", name="password", placeholder="Password")
+        tr
+          td Role
+          td
+            select(name="roleId")
+              for val in roles
+                if role == val.name
+                  option(selected value=val.id) #{val.name}
+                else  
+                  option(value=val.id) #{val.name}
       br
       input(type="submit", value="Submit")
   

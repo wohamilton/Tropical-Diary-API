@@ -14,41 +14,41 @@
     ]
   },
   "User": {
-    "dataSource": "db",
+    "dataSource": "cloudantDs",
     "public": true
   },
   "AccessToken": {
-    "dataSource": "db",
+    "dataSource": "cloudantDs",
     "public": false
   },
   "ACL": {
-    "dataSource": "db",
+    "dataSource": "cloudantDs",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "db"
+    "dataSource": "cloudantDs"
   },
   "Role": {
-    "dataSource": "db"
+    "dataSource": "cloudantDs"
   },
   "Team": {
-    "dataSource": "db",
+    "dataSource": "cloudantDs",
     "public": false
   },
   "TropicalUser": {
-    "dataSource": "db",
+    "dataSource": "cloudantDs",
     "public": true
   },
   "Diary": {
-    "dataSource": "db",
+    "dataSource": "cloudantDs",
     "public": true
   },
   "Activity": {
-    "dataSource": "db",
+    "dataSource": "cloudantDs",
     "public": true
   },
   "Reference": {
-    "dataSource": "db",
+    "dataSource": "cloudantDs",
     "public": true
   }
 }

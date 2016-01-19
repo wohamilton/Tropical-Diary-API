@@ -8,9 +8,10 @@ block content
   
   if !activity
 
-    input(type="hidden", name="diaryId", value=diaryId, placeholder="Description")
- 
+     
     form(action="/addactivity", method="post")
+      input(type="hidden", name="diaryId", value=diaryId, placeholder="DiaryId")
+
       table
         tr
           td Name
@@ -51,9 +52,8 @@ block content
   else
 
     form(action="/editActivity", method="post")
-            input(type="hidden", name="activityId", value=activity.id, placeholder="Id")
-            input(type="hidden", name="diaryId", value=diaryId, placeholder="Description")
-
+      input(type="hidden", name="activityId", value=activity.id, placeholder="Id")
+      input(type="hidden", name="diaryId", value=diaryId, placeholder="Description")
 
       table
         tr
@@ -99,15 +99,15 @@ block content
           td
             select(name="isPublished")
               if activity.isPublished == true
-                option(selected value=true) True
+                option(selected value='true') True
               else        
-                option(value=true) True
+                option(value='true') True
 
               if activity.isPublished == false
-                option(selected value=false) False
+                option(selected value='false') False
               else        
-                option(value=false) False
+                option(value='false') False
 
-    br
-    input(type="submit", value="Submit")
+      br
+      input(type="submit", value="Submit")
  

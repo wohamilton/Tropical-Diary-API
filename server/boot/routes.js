@@ -14,6 +14,8 @@ module.exports = function(app) {
   });
   
   router.get('/home', function(req, res) {
+    
+    /*
     app.models.Role.find(function(err, roles) {
           if (err) console.log(err)
         
@@ -24,6 +26,11 @@ module.exports = function(app) {
           });
 
         });
+
+	*/
+
+     res.render('home', {});
+
     
     });
 
@@ -100,14 +107,17 @@ module.exports = function(app) {
       if (err) {
         console.log(err);
       }else{
-     
-        console.log(JSON.stringify(diary));
-
-	var activities = diary.activities();
-
-        res.render('diary', {
-          diary: diary,
-	  activities: activities,
+        //console.log(diary)
+        app.models.Activity.find({where:{diaryId: diary.id}}, function(err, activities){
+          if (err) {
+            console.log(err);
+          }else{
+            //console.log(activities);
+            res.render('diary', {
+              diary: diary,
+	      activities: activities
+	    });
+          }
         });
       }    
     });
@@ -153,7 +163,7 @@ module.exports = function(app) {
     var userId = req.body.userId;
     var diaryName = req.body.diaryName;
 
-    var diaryDataString = '{"ownerId":'+userId+', "name":"'+diaryName+'"}';
+    var diaryDataString = '{"ownerId":"'+userId+'", "name":"'+diaryName+'"}';
     
     console.log('JSON String: ' + diaryDataString);
     
@@ -176,9 +186,9 @@ module.exports = function(app) {
   router.get('/addActivity', function(req, res) {
 
       var diaryId = req.query.diaryId;
- 
+
       res.render('add_activity',{
-        diaryId: diaryId
+        	diaryId: diaryId
       });
   });
 
@@ -204,7 +214,7 @@ module.exports = function(app) {
     var imageUrl = req.body.imageUrl;
     var isPublished = req.body.isPublished;
 
-    var activityDataString = '{"session":"'+session+'","description":"'+description+'", "name":"'+name+'", "diaryId":'+diaryId+', "start_date":"'+startDate+'", "end_date":"'+endDate+'", "image_url":"'+imageUrl+'", "isPublished":'+isPublished+'}';
+    var activityDataString = '{"session":"'+session+'","description":"'+description+'", "name":"'+name+'", "diaryId":"'+diaryId+'", "start_date":"'+startDate+'", "end_date":"'+endDate+'", "image_url":"'+imageUrl+'", "isPublished":'+isPublished+'}';
     
     console.log('JSON String: ' + activityDataString);
     
@@ -283,14 +293,17 @@ module.exports = function(app) {
     var imageUrl = req.body.imageUrl;
     var isPublished = req.body.isPublished;
 
-    var activityDataString = '{"id":"'+id+'","session":"'+session+'","description":"'+description+'", "name":"'+name+'", "diaryId":'+diaryId+', "start_date":"'+startDate+'", "end_date":"'+endDate+'", "image_url":"'+imageUrl+'", "isPublished":"'+isPublished+'"}';
+    var activityDataString = '{"id":"'+id+'","session":"'+session+'","description":"'+description+'", "name":"'+name+'", "diaryId":"'+diaryId+'", "start_date":"'+startDate+'", "end_date":"'+endDate+'", "image_url":"'+imageUrl+'", "isPublished":'+isPublished+'}';
     
+//    var activityDataString = '{"id":"'+id+'","session":"test", "name":"test"}';
+    
+
     console.log('JSON String: ' + activityDataString);
     
     var activityDataJSON = JSON.parse(activityDataString);
 
     
-    app.models.Activity.upsert(activityDataJSON, function(err, obj){
+    app.models.Activity.updateAll({id: id}, activityDataJSON, function(err, obj){
       if (err) {
         console.log(err);
       }else{
@@ -330,177 +343,95 @@ module.exports = function(app) {
 
   router.get('/users', function(req, res){
    
-  var RoleMapping = app.models.RoleMapping;
-  var User = app.models.TropicalUser;
-  var Role = app.models.Role;
+    var RoleMapping = app.models.RoleMapping;
+    var User = app.models.TropicalUser;
+    var Role = app.models.Role;
+  //  var role = req.query.role;
+  //  var roleId = req.query.roleId;
 
-  var role = req.query.role;
-  var roleId = req.query.roleId;
+  //  console.log("Role: " + role);
 
-  console.log("Role: " + role);
+    var getRolesWithBluebird = function(){
 
-  /////////////////////////////
-  ////////Get users by role////
+      return new Promise(function(resolve, reject){
 
-  RoleMapping.usersIDByRole = function(role, callback){
+        Role.find(function(err, roles) {
 
-    RoleMapping.app.models.Role.findOne({where: {name:role}}, function(err, role){
+          if (err) reject(err); //the value in the reject function will be passed to the .catch function
 
-     if( err || !role ) return callback(err);
-        RoleMapping.find({
-          where: {
-            roleId: role.id,
-            principalType: RoleMapping.USER
-          }
-         }, function(err, mappings){
-
-           if( err ) return callback(err);
-              var users = mappings.map(function (m) {
-               return m.principalId;
-              });
-              callback(null, users);
-          });
+          resolve(roles); //the value passed in the resolve function will be passed to the .then function
+        });
       });
+    };
 
-   } 
+    var getRoleMappingsWithBluebird = function(roles){
 
-   User.getUsersByRole = function(role, callback) {
+      return new Promise(function(resolve, reject){
 
-     User.app.models.RoleMapping.usersIDByRole(role, function(err, users) {
+        RoleMapping.find(function(err, roleMappings) {
 
-       if( err || !users ) return callback(err);
-       
-       User.find({where: {id : {inq:users}}}, function(err, users){
-         console.log(users);
-	 
-	 res.render('users', {
-            role: role,
-            roleId: roleId,
-	    users: users 
-         });
-       });
-     });
-   };
+          if (err) reject(err); //the value in the reject function will be passed to the .catch function
 
-//////////////////////////////////
-/////////////////////////////////
-var getRolesWithBluebird = function(){
+          resolve(roleMappings); //the value passed in the resolve function will be passed to the .then function
+        });
+      });
+    };
 
-  return new Promise(function(resolve, reject){
+    var getUsersWithBluebird = function(roles, roleMappings){
 
-    Role.find(function(err, roles) {
+      return new Promise(function(resolve, reject){
 
-      if (err) reject(err); //the value in the reject function will be passed to the .catch function
+        User.find(function(err, users) {
 
-      resolve(roles); //the value passed in the resolve function will be passed to the .then function
-    });
-  });
-};
-
-var getRoleMappingsWithBluebird = function(roles){
-
-  return new Promise(function(resolve, reject){
-
-    RoleMapping.find(function(err, roleMappings) {
-
-      if (err) reject(err); //the value in the reject function will be passed to the .catch function
-
-      resolve(roleMappings); //the value passed in the resolve function will be passed to the .then function
-    });
-  });
-};
-
-var getUsersWithBluebird = function(roles, roleMappings){
-
-  return new Promise(function(resolve, reject){
-
-    User.find(function(err, users) {
-
-      if (err) reject(err); //the value in the reject function will be passed to the .catch function
+          if (err) reject(err); //the value in the reject function will be passed to the .catch function
 
       
-      for (var i=0; i<roleMappings.length; i++){
+          for (var i=0; i<roleMappings.length; i++){
         
-	console.log('rolemapping.principalID: ' + roleMappings[i].principalId);
+            //console.log('rolemapping.principalID: ' + roleMappings[i].principalId);
 
-        for (var j=0; j<users.length; j++){
+            for (var j=0; j<users.length; j++){
           
-          console.log('userId: ' + users[j].id);
+              //console.log('userId: ' + users[j].id);
+ 
+              if (roleMappings[i].principalId == users[j].id){
+                //console.log('match: ' + roleMappings[i].principalId + ' vs ' + users[j].id);
+                users[j].roleId = roleMappings[i].roleId;
+  
+              }
+            }
+          }
 
-	  if (roleMappings[i].principalId == users[j].id){
-            console.log('match: ' + roleMappings[i].principalId + ' vs ' + users[j].id);
-	    users[j].roleId = roleMappings[i].roleId;
-
-	  }
-
-
-	}
-
-
-
-      }
-
-
-            
-      for (var i=0; i<users.length; i++){
-        for (var j=0; j<roles.length; j++){
-          if (users[i].roleId == roles[j].id){
-            users[i].role = roles[j].name;
-	  }
-	}
-      }
-      
-      console.log(JSON.stringify(users));
-
-      
-      resolve(users); //the value passed in the resolve function will be passed to the .then function
-    });
-  });
-};
+          for (var i=0; i<users.length; i++){
+            for (var j=0; j<roles.length; j++){
+              if (users[i].roleId == roles[j].id){
+                users[i].role = roles[j].name;
+              }
+            }
+          }
+          console.log(JSON.stringify(users));
+          resolve(users); //the value passed in the resolve function will be passed to the .then function
+        });
+      });
+    };
 
 
-
-/////////
-////////
-
-
-
-getRolesWithBluebird()
-.then(function(roles){
-  console.log('got this: ' + roles);
-  getRoleMappingsWithBluebird(roles)
-  .then(function(roleMappings){
-    console.log('next got this: ' + roleMappings);
-    getUsersWithBluebird(roles, roleMappings)
-    .then(function(users){
-      console.log('next next got this: ' + users);
-      res.render('users', {users: users});
+    getRolesWithBluebird()
+    .then(function(roles){
+      //console.log('got this: ' + roles);
+      getRoleMappingsWithBluebird(roles)
+      .then(function(roleMappings){
+        //console.log('next got this: ' + roleMappings);
+        getUsersWithBluebird(roles, roleMappings)
+        .then(function(users){
+          //console.log('next next got this: ' + users);
+          res.render('users', {users: users});
+        })
+      })
     })
-  })
-})
-.catch (function(error){
-  console.log('something went wrong: ' + error);
-});
-
-//getAvatarWithBluebird('danthareja')
-//.then(function(avatarUrl){
-// console.log('got this: ' + avatarUrl);
-//    getAvatarWithBluebird('wohamilton')
-//      .then(function(avatarUrl2){
-//          console.log('then got this: ' + avatarUrl2);
-//	    });
-
-
-
-///////
-
-
-
-
-
-
-//   User.getUsersByRole(role);
-
+    .catch (function(error){
+      console.log('something went wrong: ' + error);
+    });
   });
 
 
@@ -516,12 +447,12 @@ getRolesWithBluebird()
           console.log(err);
         }else{
 	
-  	  console.log(user);
+  	  //console.log(user);
 
           app.models.Role.find(function(err, roles) {
             if (err) console.log(err)
         
-            console.log(roles)
+            //console.log(roles)
 
             res.render('add_user', {
               user: user,
@@ -539,16 +470,16 @@ getRolesWithBluebird()
 
   router.post('/editUser', function(req, res) {
     
-    console.log('req.body.name: ' + req.body.name);
-    console.log('req.body.userName: ' + req.body.userName);
-    console.log('req.body.email: ' + req.body.email);
-    console.log('req.body.newRoleId: ' + req.body.newRoleId);
-    console.log('req.body.id: ' + req.body.userId);
-    console.log('req.body.originalRole: ' + req.body.originalRole);
-    console.log('req.body.originalRoleId: ' + req.body.originalRoleId)
+    //console.log('req.body.name: ' + req.body.name);
+    //console.log('req.body.userName: ' + req.body.userName);
+    //console.log('req.body.email: ' + req.body.email);
+    //console.log('req.body.newRoleId: ' + req.body.newRoleId);
+    //console.log('req.body.id: ' + req.body.userId);
+    //console.log('req.body.originalRole: ' + req.body.originalRole);
+    //console.log('req.body.originalRoleId: ' + req.body.originalRoleId)
+    //console.log('req.body.password: ' + req.body.password)
 
-
-    console.log("req.body: " + JSON.stringify(req.body));
+    //console.log("req.body: " + JSON.stringify(req.body));
 
     var name = req.body.name;
     var userName = req.body.userName;
@@ -557,44 +488,49 @@ getRolesWithBluebird()
     var originalRole = req.body.originalRole;
     var originalRoleId = req.body.originalRoleId;
     var newRoleId = req.body.newRoleId;
+    //var password = req.body.password;
     
-    var userDataString = '{"id":"'+id+'","name":"'+name+'","username":"'+userName+'", "email":"'+email+'"}';
+    var userDataString = '{"id":"'+id+'","name":"'+name+'","password": "xxx", "username":"'+userName+'", "email":"'+email+'"}';
     
     console.log('JSON String: ' + userDataString);
     var userDataJSON = JSON.parse(userDataString);
 
     
-    app.models.TropicalUser.upsert(userDataJSON, function(err, obj){
+    app.models.TropicalUser.updateAll({id:id}, userDataJSON, function(err, obj){
       if (err) {
         console.log(err);
       }else{
-        console.log(obj);
-      }
-    });
-
+        console.log("TROPICAL USER UPSERT WORKED: " + obj);
      
-    app.models.RoleMapping.findOne({where: {principalId:id, roleId:originalRoleId}}, function(err, roleMapping){
-      if (err) {
-        console.log(err);
-      }else{
-        console.log("roleMapping " + roleMapping);
-          
-
-        //NEED NEW ROLE ID 
-        var roleMappingString = '{"id":"'+roleMapping.id+'","principalId":"'+id+'","roleId":"'+newRoleId+'"}';
-        var roleMappingJSON = JSON.parse(roleMappingString);
-
-        app.models.RoleMapping.upsert(roleMappingJSON, function(err, obj){
+        /////
+        
+	app.models.RoleMapping.findOne({where: {principalId:id, roleId:originalRoleId}}, function(err, roleMapping){
           if (err) {
             console.log(err);
           }else{
-            console.log(obj);
-            res.redirect('/users');
+            //console.log("roleMapping " + roleMapping);
+          
+
+            //NEED NEW ROLE ID 
+            var roleMappingString = '{"id":"'+roleMapping.id+'","principalId":"'+id+'","roleId":"'+newRoleId+'"}';
+            console.log("ROLEMAPPING: " + roleMappingString);
+	    var roleMappingJSON = JSON.parse(roleMappingString);
+
+            app.models.RoleMapping.updateAll({id:roleMapping.id}, roleMappingJSON, function(err, obj){
+              if (err) {
+                console.log(err);
+              }else{
+                console.log("ROLE MAPPING INSERT WORKED: " + obj);
+                res.redirect('/users');
+              }
+            });
           }
         });
+
+        ////
       }
     });
-  });
+ });
  
   router.get('/addUser', function(req, res) {
     /* 
